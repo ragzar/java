@@ -20,14 +20,14 @@ import com.almundo.model.Caller;
 
 public class Dispatcher {
 
-	private static Dispatcher instance;
+	private static Dispatcher INSTANCE;
 	private BlockingQueue<Caller> eventQueue;
 	private AtomicInteger calls = new AtomicInteger(0);
 	private final CallProcessor processor = new CallProcessor();
 	private List<EmployeeListener> employees = new ArrayList<>();
 	private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
-	private static final Logger LOG = LoggerFactory.getLogger(Dispatcher.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Dispatcher.class);
 
 	// Private constructor
 	private Dispatcher() {
@@ -35,17 +35,17 @@ public class Dispatcher {
 
 	// Singleton Instance of dispatcher
 	public static Dispatcher getInstance() {
-		if (instance == null) {
-			instance = new Dispatcher();
+		if (INSTANCE == null) {
+			INSTANCE = new Dispatcher();
 		}
-		return instance;
+		return INSTANCE;
 	}
-	
-	// Creating Queue to manage the calls, employee list, and queue monitor 
+
+	// Creating Queue to manage the calls, employee list, and queue monitor
 	private void initialize() {
 
 		if (eventQueue == null) {
-			LOG.info("INIT DISPATCHER");
+			LOGGER.info("INIT DISPATCHER");
 			employees.addAll(Operator.of("A", "B", "C", "D", "E"));
 			employees.addAll(Supervisor.of("A", "B", "C"));
 			employees.addAll(Director.of("A", "B"));
@@ -55,7 +55,6 @@ public class Dispatcher {
 		}
 	}
 
-	
 	// Dispatch call to employees
 	public void dispatchCall(Caller caller) {
 		try {
@@ -63,24 +62,24 @@ public class Dispatcher {
 			initialize();
 			eventQueue.put(caller);
 		} catch (InterruptedException ex) {
-			ex.printStackTrace();
+			LOGGER.error(ex.getMessage(), ex);
 		} finally {
 			readWriteLock.writeLock().unlock();
 		}
 	}
 
-	//Current count of received calls
+	// Current count of received calls
 	public int processedCalls() {
 		return calls.get();
 	}
 
-	//cleaning the dispatcher
+	// cleaning the dispatcher
 	public void exit() {
 		processor.run = false;
 		calls = new AtomicInteger(0);
 	}
 
-	//Add employee to list of listeners
+	// Add employee to list of listeners
 	public void registerEmployee(EmployeeListener employee) {
 		readWriteLock.writeLock().lock();
 		this.employees.add(employee);
@@ -88,8 +87,7 @@ public class Dispatcher {
 		readWriteLock.writeLock().unlock();
 	}
 
-	
-	//  Class to make a continuous monitoring of the queue of calls
+	// Class to make a continuous monitoring of the queue of calls
 	private class CallProcessor extends Thread {
 		private boolean run = true;
 
@@ -104,7 +102,7 @@ public class Dispatcher {
 								employee.recieveCall(eventQueue.take());
 								calls.incrementAndGet();
 							} catch (InterruptedException e) {
-								e.printStackTrace();
+								LOGGER.error(e.getMessage(), e);
 							}
 						}
 					}

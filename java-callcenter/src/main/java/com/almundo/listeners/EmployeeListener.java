@@ -18,11 +18,10 @@ public interface EmployeeListener extends Comparable<EmployeeListener> {
 	ExecutorService pool = Executors.newFixedThreadPool(10);
 
 	AtomicInteger processed = new AtomicInteger(0);
-	Logger LOG = LoggerFactory.getLogger(Dispatcher.class);
+	Logger LOGGER = LoggerFactory.getLogger(Dispatcher.class);
 
 	void recieveCall(Caller caller);
 
-	
 	public default Runnable task(Caller caller) {
 		return () -> {
 
@@ -31,10 +30,10 @@ public interface EmployeeListener extends Comparable<EmployeeListener> {
 			try {
 				TimeUnit.SECONDS.sleep(duration);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				LOGGER.error(e.getMessage(), e);
 			} finally {
-				LOG.info(getName() + "\tStart " + start + "\tEnd " + Instant.now() + "\tCaller " + caller.getId() + "\tDuration"
-						+ "" + duration);
+				LOGGER.info(getName() + "\tStart " + start + "\tEnd " + Instant.now() + "\tCaller " + caller.getId()
+						+ "\tDuration" + "" + duration);
 				setOnCall(false);
 			}
 		};
