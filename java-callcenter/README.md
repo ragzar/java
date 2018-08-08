@@ -21,19 +21,17 @@ debe ser atendida por un director.
 
 * La atención de las llamadas se realiza simulando el patrón Observer con un modificación en la cual solo el primer observador disponible recibirá el objeto 
 
-* Cada empleado u observador modificara su estado, al iniciar la atención de una llamada y nuevamente al finalizar
+* Cada empleado u observador modifica su estado al iniciar la atención de una llamada y nuevamente al finalizar
 
-* las llamadas duran de 5 a 10 segundos de forma aleatoria.
+* Las llamadas duran entre 5 a 10 segundos de forma aleatoria.
 
-* Hay un pool máximo (configurable) de máx. 10 llamadas concurrentes.
-
-* Existe una prueba unitaria de 10 hilos concurrentes y por cada hilo se simula 5 llamadas. se registra una comparación de las llamadas procesadas.
+* Existe una prueba unitaria de 10 hilos concurrentes y por cada hilo se simula 5 llamadas. esta se valida con la comparación de las llamadas procesadas.
 
 
 # EXTRAS
 
 * Cuando no hay empleados disponibles, las llamadas se siguen registrando en una cola de espera hasta que el primer empleado disponible reciba las llamadas. así hasta que la cola quede sin llamadas.
 
-* Existe un pool de hilos con tamaño fijado a 10. si hay más de 10 llamadas concurrentes estas quedan en espera que haya un hilo disponible.
+* Existe un pool de hilos con tamaño fijado a 10. si hay más de 10 llamadas concurrentes estas quedan en espera que haya un hilo disponible, el pool máximo es configurable.
 
 * Existe una clase con un método main para probar la funcionalidad de hilos y llamados concurrentes junto a nuevos empleados.
